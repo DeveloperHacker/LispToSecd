@@ -4,6 +4,8 @@
 #include <string>
 #include <list>
 
+namespace Simplify
+{
 class Atom
 {
 private:
@@ -21,5 +23,6 @@ public:
 
 std::list<Atom> StringToList (std::string);
 std::string ListToString (std::list<Atom>);
+}
 
 #endif // ATOM_H

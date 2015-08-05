@@ -17,7 +17,7 @@ public:
     static bool isNumber(const std::string &number);
     void execute(std::string);
 private:
-    std::list<Atom> SimplifySourceFile(std::ifstream &);
+    std::list< Simplify::Atom> SimplifySourceFile(std::ifstream &);
 
 };
 

@@ -1,7 +1,6 @@
-#include "function.h"
-#include <iostream>
+#include "Simplify/function.h"
 
-std::string Function::Determine(std::list<std::list<Atom>> argv)
+std::string Simplify::Function::Determine(std::list<std::list<Atom>> argv)
 {
     if (argv.size() != this->argn.size()) throw Exception("Function", "The number of function arguments do not match.");
 
@@ -26,18 +25,17 @@ std::string Function::Determine(std::list<std::list<Atom>> argv)
     return result;
 }
 
-
-size_t Function::Args() const
+size_t Simplify::Function::Args() const
 {
     return argn.size();
 }
 
-std::string Function::Name() const
+std::string Simplify::Function::Name() const
 {
     return name;
 }
 
-Function &Function::operator =(const Function &func)
+Simplify::Function &Simplify::Function::operator =(const Simplify::Function &func)
 {
     if (&func != this)
     {
@@ -49,12 +47,12 @@ Function &Function::operator =(const Function &func)
     return *this;
 }
 
-bool Function::operator ==(const Function &func) const
+bool Simplify::Function::operator ==(const Simplify::Function &func) const
 {
     return func.name == name;
 }
 
-bool Function::operator !=(const Function &func) const
+bool Simplify::Function::operator !=(const Simplify::Function &func) const
 {
     return func.name != name;
 }

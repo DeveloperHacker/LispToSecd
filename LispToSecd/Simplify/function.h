@@ -4,6 +4,8 @@
 #include "Simplify/atom.h"
 #include "exception.h"
 
+namespace Simplify
+{
 enum class Status {let, letrec};
 class Function
 {
@@ -23,6 +25,6 @@ public:
     bool operator == (const Function&) const;
     bool operator != (const Function&) const;
 };
-
+}
 
 #endif // FUNCTION_H

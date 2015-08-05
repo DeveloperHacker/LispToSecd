@@ -4,8 +4,9 @@
 #include <stack>
 #include "Simplify/function.h"
 
+namespace Simplify
+{
 enum class Stage {Start, End, Declaring, ReadNameFunc, StartReadArgn, ReadArgn, ReadBodyFunc, ReadArgv};
-
 struct DeclaringFunc
 {
     std::string name;
@@ -13,7 +14,6 @@ struct DeclaringFunc
     std::list<Atom> body;
     Status status;
 };
-
 struct Segment
 {
     Stage stage;
@@ -35,5 +35,6 @@ struct Segment
     }
 };
 typedef std::stack<Segment> Buffer;
+}
 
 #endif // BUFFER

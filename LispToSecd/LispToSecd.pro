@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2015-07-25T12:59:47
+# Project created by QtCreator 2015-08-05T11:48:19
 #
 #-------------------------------------------------
 
@@ -17,16 +17,19 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    parser.cpp \
+    Simplify/atom.cpp \
     Simplify/function.cpp \
-    Simplify/atom.cpp
+    Tree/Function.cpp \
+    Tree/leaf.cpp \
+    Tree/sexpression.cpp \
+    parser.cpp
 
 HEADERS += \
-    parser.h \
-    exception.h \
-    Simplify/function.h \
     Simplify/atom.h \
-    Simplify/buffer.h
-
-DISTFILES += \
-    source.lisp
+    Simplify/buffer.h \
+    Simplify/function.h \
+    Tree/Function.h \
+    Tree/leaf.h \
+    Tree/sexpression.h \
+    exception.h \
+    parser.h
