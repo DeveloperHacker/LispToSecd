@@ -11,12 +11,14 @@ class Atom
 private:
     std::string name;
 public:
+    Atom() = default;
     Atom(std::string name) : name(name) {}
     Atom(const Atom&);
     ~Atom() = default;
 public:
     const std::string& Name() const;
 public:
+    Atom &operator = (const Atom &);
     bool operator == (const Atom &) const;
     bool operator != (const Atom &) const;
 };

@@ -1,5 +1,13 @@
 #include "Simplify/function.h"
 
+Simplify::Function::Function(const Simplify::Function &func)
+{
+    this->argn = func.argn;
+    this->body = func.body;
+    this->name = func.name;
+    this->status = func.status;
+}
+
 std::string Simplify::Function::Determine(std::list<std::list<Atom>> argv)
 {
     if (argv.size() != this->argn.size()) throw Exception("Function", "The number of function arguments do not match.");

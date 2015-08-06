@@ -25,13 +25,13 @@ void Parser::execute(std::string fileNameIn)
     std::ofstream out(fileNameOut);
     if (!in) throw Exception("Execute", "Source file is not found.");
 
-    auto list = SimplifySourceFile (in);
+    std::list<Simplify::Atom> list = SimplifySourceFile (in);
     std::cout << Simplify::ListToString(list) << std::endl;
-    //Tree = BuildTree(list);
+    Tree::Root root = BuildTree(list);
     //GenSecdCode(out, Tree);
 }
 
-std::list< Simplify::Atom> Parser::SimplifySourceFile(std::ifstream &in)
+std::list< Simplify::Atom> Parser::SimplifySourceFile(std::ifstream &in) const
 {
     std::list< Simplify::Function> declaredFunc;
     declaredFunc.push_back( Simplify::Function("car", Simplify::StringToList("A"), Simplify::StringToList("car A"), Simplify::Status::let));
@@ -53,8 +53,8 @@ std::list< Simplify::Atom> Parser::SimplifySourceFile(std::ifstream &in)
     declaredFunc.push_back( Simplify::Function("if",  Simplify::StringToList("A B C"), Simplify::StringToList("if A B C"), Simplify::Status::let));
     Simplify::Stage stage = Simplify::Stage::Start;
     Simplify::DeclaringFunc declaringFunc;
-    long long int expectArgs;
-    long long int args;
+    long long int expectArgs = 0;
+    long long int args = 0;
     std::list< Simplify::Atom> out;
     Simplify::Buffer buffer;
 
@@ -258,7 +258,6 @@ std::list< Simplify::Atom> Parser::SimplifySourceFile(std::ifstream &in)
                             }
                             if (it != declaredFunc.end()) *it = Simplify::Function(declaringFunc.name, declaringFunc.argn, declaringFunc.body, declaringFunc.status);
                             else declaredFunc.push_back(Simplify::Function(declaringFunc.name, declaringFunc.argn, declaringFunc.body, declaringFunc.status));
-//                            declaredFunc.push_back(Simplify::Function(declaringFunc.name, declaringFunc.argn, declaringFunc.body, declaringFunc.status));
                             out = std::list< Simplify::Atom>(oldOut);
                         }
                         if (declaringFunc.status == Simplify::Status::letrec)
@@ -306,4 +305,11 @@ std::list< Simplify::Atom> Parser::SimplifySourceFile(std::ifstream &in)
     if (stage != Simplify::Stage::End) throw Exception("SimplifySourceFile", "At the end source file of expected token ')'.");
 
     return out;
+}
+
+Tree::Root Parser::BuildTree(std::list<Simplify::Atom> &) const
+{
+    Tree::Root root;
+
+    return root;
 }

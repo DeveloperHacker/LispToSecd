@@ -13,6 +13,15 @@ const std::string &Simplify::Atom::Name() const
     return name;
 }
 
+Simplify::Atom &Simplify::Atom::operator =(const Simplify::Atom &atom)
+{
+    if (&atom != this)
+    {
+        name = atom.Name();
+    }
+    return *this;
+}
+
 bool Simplify::Atom::operator ==(const Simplify::Atom &atom) const
 {
     return atom.Name() == name;

@@ -12,24 +12,22 @@ TARGET = LispToSecd
 CONFIG   += console
 CONFIG   -= app_bundle
 QMAKE_CXXFLAGS      += -std=c++11
+QMAKE_LFLAGS    += -static
 
 TEMPLATE = app
 
 
 SOURCES += main.cpp \
     Simplify/atom.cpp \
+    parser.cpp \
     Simplify/function.cpp \
-    Tree/Function.cpp \
-    Tree/leaf.cpp \
-    Tree/sexpression.cpp \
-    parser.cpp
+    Simplify/buffer.cpp \
+    Tree/tree.cpp
 
 HEADERS += \
     Simplify/atom.h \
     Simplify/buffer.h \
     Simplify/function.h \
-    Tree/Function.h \
-    Tree/leaf.h \
-    Tree/sexpression.h \
     exception.h \
-    parser.h
+    parser.h \
+    Tree/tree.h

@@ -15,6 +15,8 @@ private:
     std::list<Atom> body;
     Status status;
 public:
+    Function() = default;
+    Function(const Function &);
     Function(std::string name, std::list<Atom> argn, std::list<Atom> body, Status status) : name(name), argn(argn), body(body), status(status) {}
     ~Function() = default;
 public:
