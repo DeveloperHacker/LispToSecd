@@ -18,16 +18,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    Simplify/atom.cpp \
-    parser.cpp \
-    Simplify/function.cpp \
-    Simplify/buffer.cpp \
-    Tree/tree.cpp
+    Tree/tree.cpp \
+    Simplify/simplify.cpp \
+    Parser/parser.cpp
 
 HEADERS += \
-    Simplify/atom.h \
-    Simplify/buffer.h \
-    Simplify/function.h \
     exception.h \
     parser.h \
-    Tree/tree.h
+    Tree/tree.h \
+    Simplify/simplify.h \
+    Parser/parser.h

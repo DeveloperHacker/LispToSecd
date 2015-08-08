@@ -4,9 +4,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-
-#include "exception.h"
-#include "Simplify/buffer.h"
+#include "Simplify/simplify.h"
 #include "Tree/tree.h"
 
 class Parser

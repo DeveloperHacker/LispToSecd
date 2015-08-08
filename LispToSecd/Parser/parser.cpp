@@ -74,7 +74,7 @@ std::list< Simplify::Atom> Parser::SimplifySourceFile(std::ifstream &in) const
         {
             if (token == "(")
             {
-                out.push_back( Simplify::Atom(token));
+                out.push_back(Simplify::Atom(token));
                 stage = Simplify::Stage::Declaring;
             }
             else throw Exception("SimplifySourceFile", "At the beginning source file of expected token '('.");
@@ -231,7 +231,8 @@ std::list< Simplify::Atom> Parser::SimplifySourceFile(std::ifstream &in) const
                 }
                 if (buffer.size() == 0)
                 {
-                    out.push_back( Simplify::Atom(token));
+                    if (out.front().Name() == "letrec") out.push_front( Simplify::Atom("("));
+                    out.push_back( Simplify::Atom(")"));
                     stage = Simplify::Stage::End;
                 }
                 else
@@ -263,7 +264,6 @@ std::list< Simplify::Atom> Parser::SimplifySourceFile(std::ifstream &in) const
                         if (declaringFunc.status == Simplify::Status::letrec)
                         {
                             out.clear();
-                            out.push_back( Simplify::Atom("("));
                             out.push_back( Simplify::Atom("letrec"));
                             out.push_back( Simplify::Atom(declaringFunc.name));
                             out.push_back( Simplify::Atom("("));
@@ -307,9 +307,113 @@ std::list< Simplify::Atom> Parser::SimplifySourceFile(std::ifstream &in) const
     return out;
 }
 
-Tree::Root Parser::BuildTree(std::list<Simplify::Atom> &) const
+Tree::Root Parser::BuildTree(std::list<Tree::Atom> &in) const
 {
     Tree::Root root;
+    Tree::Leaf *currentLeaf = &root;
+    size_t id = 1;
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "car", 1, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "cdr", 1, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "q", 1, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "!", 1, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "+", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "-", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "*", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "/", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "&", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "|", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, ">", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "<", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "=", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "!=", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, ">=", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "<=", 2, Tree::Root(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back( Tree::Function(id++, "if",  3, Tree::Root(), Tree::Status::let));
+
+    Tree::Buffer buffer;
+    Tree::Stage stage = Tree::Stage::StartDeclaring;
+    auto it = in.begin();
+    while (it != in.end())
+    {
+        if (stage == Tree::Stage::Declaring || stage == Tree::Stage::StartDeclaring)
+        {
+            if (stage == Tree::Stage::StartDeclaring) ++it;
+            if ((*it).Name() == "letrec")
+            {
+                ++it;
+                auto name = (*it).Name();
+                ++it;
+                ++it;
+                std::list<Tree::Atom> argn;
+                while ((*it).Name() != ")")
+                {
+                    argn.push_back(*it);
+                    ++it;
+                }
+                ++it;
+                currentLeaf->declaredFunc.push_back(Tree::Function(currentLeaf->declaredFunc.back().ID() + 1, name, argn.size(), Tree::Root(), Tree::Status::letrec));
+                Tree::Segment segment;
+                segment.currentLeaf = currentLeaf;
+                segment.stage = stage;
+                buffer.push(segment);
+                currentLeaf = currentLeaf->declaredFunc.back().BodyPtr();
+                currentLeaf->declaredFunc = buffer.top().currentLeaf->declaredFunc;
+                for (const auto &atom : argn)
+                    currentLeaf->declaredFunc.push_front(Tree::Function(0, atom.Name(), 0, Tree::Root(), Tree::Status::let));
+                size_t id = 1;
+                for (auto &func : currentLeaf->declaredFunc) func.SetID(id++);
+                stage = Tree::Stage::StartDeclaring;
+            }
+            else stage = Tree::Stage::ReadHead;
+        }
+        if (stage == Tree::Stage::ReadHead)
+        {
+            for (auto & func : currentLeaf->declaredFunc)
+                if (func.Name() == (*it).Name())
+                {
+                    currentLeaf->sExpression.func = &func;
+                    break;
+                }
+            stage = Tree::Stage::ReadTail;
+            ++it;
+        }
+        if (stage == Tree::Stage::ReadTail)
+        {
+            if ((*it).Name() == "(")
+            {
+                Tree::Segment segment;
+                segment.currentLeaf = currentLeaf;
+                segment.stage = stage;
+                buffer.push(segment);
+                currentLeaf->sExpression.leafs.push_back(Tree::Leaf());
+                currentLeaf = &(currentLeaf->sExpression.leafs.back());
+                currentLeaf->declaredFunc = buffer.top().currentLeaf->declaredFunc;
+                stage = Tree::Stage::StartDeclaring;
+            }
+            else if ((*it).Name() == ")")
+            {
+                if (buffer.empty()) break;
+                currentLeaf = buffer.top().currentLeaf;
+                stage = buffer.top().stage;
+                if (stage == Tree::Stage::StartDeclaring) stage = Tree::Stage::Declaring;
+                buffer.pop();
+                ++it;
+            }
+            else
+            {
+                Tree::Function *funcPtr = nullptr;
+                for (auto & func : currentLeaf->declaredFunc)
+                    if (func.Name() == (*it).Name())
+                    {
+                        funcPtr = &func;
+                        break;
+                    }
+                if (funcPtr == nullptr) funcPtr = new Tree::Function(0, (*it).Name(), 0, Tree::Root(), Tree::Status::let);
+                currentLeaf->sExpression.leafs.push_back(Tree::Leaf(currentLeaf->declaredFunc, Tree::SExpression(funcPtr, std::list<Tree::Leaf>())));
+                ++it;
+            }
+        }
+    }
 
     return root;
 }
