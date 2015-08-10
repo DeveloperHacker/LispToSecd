@@ -27,12 +27,12 @@ struct SExpression
 
 struct Leaf
 {
-    std::list<Function> declaredFunc;
+    std::list<Function*> declaredFunc;
     SExpression sExpression;
 
     Leaf() = default;
     Leaf(const Leaf &);
-    Leaf(std::list<Function> funcs, SExpression exp) : declaredFunc(funcs), sExpression(exp) {}
+    Leaf(std::list<Function*> funcs, SExpression exp) : declaredFunc(funcs), sExpression(exp) {}
     ~Leaf() = default;
 
     Leaf &operator = (const Leaf &);
@@ -61,6 +61,7 @@ public:
     size_t ID() const;
     void SetID(size_t);
     std::string Name() const;
+    Status GetStatus() const;
 };
 
 struct Segment

@@ -28,3 +28,8 @@ HEADERS += \
     Tree/tree.h \
     Simplify/simplify.h \
     Parser/parser.h
+
+DISTFILES += \
+    ../Source/source.lisp \
+    ../Source/source.secd \
+    ../Source/source.log

@@ -88,6 +88,11 @@ std::string Tree::Function::Name() const
     return name;
 }
 
+Tree::Status Tree::Function::GetStatus() const
+{
+    return status;
+}
+
 Tree::Segment Tree::Segment::Clone()
 {
     Segment segment;
