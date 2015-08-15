@@ -4,11 +4,25 @@ bool Parser::isNumber(const std::string &number)
 {
     size_t start_index;
 
-    if (number.size() == 0) return false;
     start_index = (number[0] == '-') ? 1 : 0;
+    if (number.size() == start_index) return false;
     for (auto i = start_index; i < number.size(); ++i)
         if (number[i] < '0' || number[i] > '9') return false;
     return true;
+}
+
+std::string Parser::IntToString(long long value)
+{
+    std::list<char> string;
+    do
+    {
+        string.push_front('0' + value % 10);
+        value /= 10;
+    } while (value != 0);
+    if (value < 0) string.push_front('-');
+    std::string result;
+    for (auto ch :string) result.push_back(ch);
+    return result;
 }
 
 void Parser::execute(std::string fileNameIn)
@@ -31,13 +45,16 @@ void Parser::execute(std::string fileNameIn)
     std::cout << "Simplification of the source file...\n";
     std::list<Simplify::Atom> list = Simplification(in);
     log << FomatOutSource(list) << "\n\n";
+    log.close();
+    log.open(fileNameLog, std::ios_base::app);
 
     std::cout << "Construction of the parse tree...\n";
     Tree::Root tree = BuildTree(list);
-    PrintFormatTree(tree, log);
+    PrintFormatTree(tree.leaf, log);
+    log.close();
 
     std::cout << "Generation of the source code...\n";
-    GenSecdCode(out, tree);    
+    PrintSecdCode(out, tree);
 }
 
 std::list< Simplify::Atom> Parser::Simplification(std::ifstream &in) const
@@ -240,7 +257,6 @@ std::list< Simplify::Atom> Parser::Simplification(std::ifstream &in) const
                 }
                 if (buffer.size() == 0)
                 {
-                    if (out.front().Name() == "letrec") out.push_front( Simplify::Atom("("));
                     out.push_back( Simplify::Atom(")"));
                     stage = Simplify::Stage::End;
                 }
@@ -281,8 +297,8 @@ std::list< Simplify::Atom> Parser::Simplification(std::ifstream &in) const
                             out.push_back( Simplify::Atom("("));
                             for (const auto &atom : declaringFunc.body) out.push_back(atom);
                             out.push_back( Simplify::Atom(")"));
-                            oldOut.pop_front();
-                            for (const auto &atom : oldOut) out.push_back(atom);
+                            for (const auto &atom : out) oldOut.push_back(atom);
+                            out = oldOut;
                         }
                     }
                     else
@@ -319,25 +335,25 @@ std::list< Simplify::Atom> Parser::Simplification(std::ifstream &in) const
 Tree::Root Parser::BuildTree(std::list<Tree::Atom> &in) const
 {
     Tree::Root root;
-    Tree::Leaf *currentLeaf = &root;
-    size_t id = 1;
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "car", 1, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "cdr", 1, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "q", 1, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "!", 1, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "+", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "-", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "*", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "/", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "&", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "|", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, ">", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "<", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "=", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "!=", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, ">=", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "<=", 2, Tree::Root(), Tree::Status::let));
-    currentLeaf->declaredFunc.push_back(new Tree::Function(id++, "if",  3, Tree::Root(), Tree::Status::let));
+    Tree::Leaf *currentLeaf = &root.leaf;
+    currentLeaf->declaredFunc.push_back(new Tree::Function("car", 1, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("cdr", 1, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("q", 1, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("!", 1, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("+", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("-", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("*", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("/", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("&", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("|", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function(">", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("<", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("=", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("!=", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function(">=", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("<=", 2, Tree::Leaf(), Tree::Status::let));
+    currentLeaf->declaredFunc.push_back(new Tree::Function("if",  3, Tree::Leaf(), Tree::Status::let));
+    root.BuildInfunctions = currentLeaf->declaredFunc;
 
     Tree::Buffer buffer;
     Tree::Stage stage = Tree::Stage::StartDeclaring;
@@ -360,30 +376,38 @@ Tree::Root Parser::BuildTree(std::list<Tree::Atom> &in) const
                     ++it;
                 }
                 ++it;
-                currentLeaf->declaredFunc.push_back(
-                            new Tree::Function(currentLeaf->declaredFunc.back()->ID() + 1, name, argn.size(), Tree::Root(), Tree::Status::letrec));
+                currentLeaf->declaredFunc.push_back( new Tree::Function(name, argn.size(), Tree::Leaf(), Tree::Status::letrec));
                 Tree::Segment segment;
                 segment.currentLeaf = currentLeaf;
                 segment.stage = stage;
                 buffer.push(segment);
                 currentLeaf = currentLeaf->declaredFunc.back()->BodyPtr();
                 currentLeaf->declaredFunc = buffer.top().currentLeaf->declaredFunc;
+                auto counter = 0ULL;
                 for (const auto &atom : argn)
-                    currentLeaf->declaredFunc.push_front(new Tree::Function(0, atom.Name(), 0, Tree::Root(), Tree::Status::let));
-                size_t id = 1;
-                for (auto &func : currentLeaf->declaredFunc) func->SetID(id++);
+                {
+                    ++counter;
+                    currentLeaf->declaredFunc.push_back(
+                            new Tree::Function(atom.Name(), 0,
+                                               Tree::Leaf(std::list<Tree::Function*>(), Tree::SExpression(new Tree::Function(IntToString(counter), 0, Tree::Leaf(), Tree::Status()), std::list<Tree::Leaf>())),
+                                               Tree::Status::argument));
+                }
                 stage = Tree::Stage::StartDeclaring;
             }
             else stage = Tree::Stage::ReadHead;
         }
         if (stage == Tree::Stage::ReadHead)
         {
-            for (auto & func : currentLeaf->declaredFunc)
-                if (func->Name() == (*it).Name())
+            auto func = currentLeaf->declaredFunc.rbegin();
+            while (func != currentLeaf->declaredFunc.rend())
+            {
+                if ((*func)->Name() == (*it).Name())
                 {
-                    currentLeaf->sExpression.func = func;
+                    currentLeaf->sExpression.func = *func;
                     break;
                 }
+                ++func;
+            }
             stage = Tree::Stage::ReadTail;
             ++it;
         }
@@ -412,13 +436,17 @@ Tree::Root Parser::BuildTree(std::list<Tree::Atom> &in) const
             else
             {
                 Tree::Function *funcPtr = nullptr;
-                for (auto & func : currentLeaf->declaredFunc)
-                    if (func->Name() == (*it).Name())
+                auto func = currentLeaf->declaredFunc.rbegin();
+                while (func != currentLeaf->declaredFunc.rend())
+                {
+                    if ((*func)->Name() == (*it).Name())
                     {
-                        funcPtr = func;
+                        funcPtr = *func;
                         break;
                     }
-                if (funcPtr == nullptr) funcPtr = new Tree::Function(0, (*it).Name(), 0, Tree::Root(), Tree::Status::let);
+                    ++func;
+                }
+                if (funcPtr == nullptr) funcPtr = new Tree::Function((*it).Name(), 0, Tree::Leaf(), Tree::Status::let); //........
                 currentLeaf->sExpression.leafs.push_back(Tree::Leaf(currentLeaf->declaredFunc, Tree::SExpression(funcPtr, std::list<Tree::Leaf>())));
                 ++it;
             }
@@ -428,12 +456,139 @@ Tree::Root Parser::BuildTree(std::list<Tree::Atom> &in) const
     return root;
 }
 
-void Parser::GenSecdCode(std::ofstream &out, const Tree::Root &tree) const
+#include <map>
+void Parser::PrintSecdCode(std::ofstream &out, Tree::Root &tree) const
 {
+    std::list<std::pair<Tree::Function*, std::string>> functions;
+    auto it = tree.BuildInfunctions.begin();
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), " RTN ")); // Car
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), " RTN ")); // Cdr
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), " RTN ")); // Q
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 1 ] RAP LDC F EQ RTN")); // !
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP ADD RTN")); // +
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP SUB RTN")); // -
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP MUL RTN")); // *
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP DIV RTN")); // /
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP CONS LDF [ LD [ 1 2 ] LDC T EQ SEL [ LD [ 1 1 ] LDC T EQ SEL [ LDC T ] [ LDC F ] ] [ LDC F ] RTN ] RAP RTN")); // &
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP CONS LDF [ LD [ 1 2 ] LDC F EQ SEL [ LD [ 1 1 ] LDC F EQ SEL [ LDC F ] [ LDC T ] ] [ LDC T ] RTN ] RAP RTN")); // |
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP LEQ LDC F EQ RTN")); // >
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP CONS LDF [ LD [ 1 2 ] LD [ 1 1 ] EQ LDC F EQ SEL [ LD [ 1 2 ] LD [ 1 1 ] LEQ SEL [ LDC T ] [ LDC F ] ] [ LDC F ] RTN ] RAP RTN")); // <
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP EQ RTN")); // ==
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP EQ LDC F EQ RTN")); // !=
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP CONS LDF [ LD [ 1 2 ] LD [ 1 1 ] EQ SEL [ LD [ 1 2 ] LD [ 1 1 ] LEQ LDC F EQ SEL [ LDC T ] [ LDC F ] ] [ LDC F ] RTN ] RAP RTN")); // >=
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP LEQ RTN")); // <=
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 1 ] RAP SEL [ LD 1 LD [ 1 2 ] RAP ] [ LD 1 LD [ 1 3 ] RAP ] RTN")); // if
 
+    for (auto & func : functions ) out << "LDF [ " << func.second << " ]  // "+ func.first->Name() +"\n";
+    for (auto i = 1ULL; i < functions.size(); ++i) out << "CONS ";
+    out << "\nLDF [\n";
+    out << AnalysisTree(tree.leaf, functions, 0);
+    out << "AP STOP";
 }
 
-void Parser::PrintFormatTree(Tree::Root &tree, std::ofstream &out)
+typedef std::pair<const Tree::Leaf*, std::list<Tree::Leaf>::const_reverse_iterator> Segment;
+std::string Parser::AnalysisTree(const Tree::Leaf &leaf, std::list<std::pair<Tree::Function*, std::string>> &functions, unsigned long long indent) const
+{
+    std::string code = "";
+    std::stack<Segment> stack;
+    stack.push(Segment(nullptr,  std::list<Tree::Leaf>::const_reverse_iterator()));
+    auto currentLeaf = &leaf;
+    std::list<Tree::Leaf>::const_reverse_iterator it = currentLeaf->sExpression.leafs.crbegin();
+    static const std::string tab = "    ";
+    while (currentLeaf != nullptr)
+    {
+        if (it == currentLeaf->sExpression.leafs.crbegin())
+        {
+            auto counter = 0ULL;
+            for (auto func : currentLeaf->declaredFunc)
+            {
+                bool find = true;
+                for (auto &pair : functions)
+                    if (pair.first == func)
+                    {
+                        find = false;
+                        break;
+                    }
+                if (find == true)
+                {
+                    ++counter;
+                    std::pair<Tree::Function*, std::string> pair(func, std::string());
+                    functions.push_front(pair);
+                    for (auto i = 0ULL; i < stack.size() + indent; ++i) code += tab;
+                    if (func->GetStatus() == Tree::Status::argument)
+                    {
+                        pair.second = "LD [ 1 " + func->BodyPtr()->sExpression.func->Name() + " ] RTN ] // "+ func->Name() +"\n";
+                        code += "LDF [ " + pair.second;
+                    }
+                    else
+                    {
+                        pair.second =  AnalysisTree(*(func->BodyPtr()), functions, stack.size());
+                        code += "LDF [ // "+ func->Name() +"\n" + pair.second;
+                    }
+                }
+            }
+            for (auto i = 0ULL; i < stack.size() + indent; ++i) code += tab;
+            code += "LD 1\n";
+            if (currentLeaf->sExpression.func->GetStatus() == Tree::Status::let)
+            {
+                for (auto i = 0ULL; i < stack.size() + indent; ++i) code += tab;
+                for (auto i = 0ULL; i < currentLeaf->sExpression.func->Args(); ++i) code += "CDR ";
+                code += "\n";
+            }
+            if (counter != 0)
+            {
+                for (auto i = 0ULL; i < stack.size() + indent; ++i) code += tab;
+                for (auto i = 0ULL; i < counter; ++i) code += "CONS ";
+                code += "\n";
+            }
+        }
+        for (auto i = 0ULL; i < stack.size() + indent; ++i) code += tab;
+        if (it != currentLeaf->sExpression.leafs.crend())
+        {
+            if (isNumber((*it).sExpression.func->Name()))
+            {
+                code += "LDF [ LDC " + (*it).sExpression.func->Name() + " RTN ]\n";
+                ++it;
+            }
+            else
+            {
+                code += "LDF [\n";
+                auto temp = &*it;
+                ++it;
+                stack.push(Segment(currentLeaf,  it));
+                currentLeaf = temp;
+                it = currentLeaf->sExpression.leafs.crbegin();
+            }
+        }
+        else
+        {
+            if (currentLeaf->sExpression.leafs.size() != 0)
+            {
+                for (auto i = 0ULL; i < currentLeaf->sExpression.leafs.size(); ++i) code += "CONS ";
+                code += "\n";
+                for (auto i = 0ULL; i < stack.size() + indent; ++i) code += tab;
+            }
+            auto counter = 1ULL;
+            for (auto &func : currentLeaf->declaredFunc)
+            {
+                if (func->Name() == currentLeaf->sExpression.func->Name()) break;
+                ++counter;
+            }
+            code += "LD [ 1 " + IntToString(counter)+ " ]\n";
+            for (auto i = 0ULL; i < stack.size() + indent; ++i) code += tab;
+            code += "RAP RTN\n";
+            currentLeaf = stack.top().first;
+            it = stack.top().second;
+            stack.pop();
+            for (auto i = 0ULL; i < stack.size() + indent; ++i) code += tab;
+            code += "]\n";
+        }
+    }
+
+    return code;
+}
+
+void Parser::PrintFormatTree(Tree::Leaf &tree, std::ofstream &out)
 {
     Tree::Leaf *currentLeaf = &tree;
     std::queue<Tree::Leaf*> queue;
@@ -512,6 +667,11 @@ std::string Parser::FomatOutSource(std::list<Simplify::Atom> in)
             for (auto i = 0ULL; i < openBrackets; ++i) out += "  ";
         }
         prevAtom = atom;
+        if (counterAtoms == 2)
+        {
+            out += "\n";
+            for (auto i = 0ULL; i < openBrackets; ++i) out += "  ";
+        }
         out += atom.Name() + " ";
         counterAtoms -= (counterAtoms == -1) ? 0 : 1;
     }

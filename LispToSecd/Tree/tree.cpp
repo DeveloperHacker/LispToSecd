@@ -37,7 +37,6 @@ Tree::Leaf &Tree::Leaf::operator =(const Tree::Leaf &leaf)
 
 Tree::Function::Function(const Tree::Function &func)
 {
-    this->id = func.id;
     this->name = func.name;
     this->body = func.body;
     this->args = func.args;
@@ -48,7 +47,6 @@ Tree::Function &Tree::Function::operator =(const Tree::Function &func)
 {
     if (&func != this)
     {
-        this->id = func.id;
         this->name = func.name;
         this->body = func.body;
         this->args = func.args;
@@ -60,27 +58,22 @@ Tree::Function &Tree::Function::operator =(const Tree::Function &func)
 
 bool Tree::Function::operator ==(const Tree::Function &func) const
 {
-    return (func.id == this->id);
+    return (func.name == this->name);
 }
 
 bool Tree::Function::operator !=(const Tree::Function &func) const
 {
-    return (func.id != this->id);
+    return !(func == *this);
 }
 
-Tree::Root *Tree::Function::BodyPtr()
+Tree::Leaf *Tree::Function::BodyPtr()
 {
     return &body;
 }
 
-void Tree::Function::SetID(size_t id)
+size_t Tree::Function::Args() const
 {
-    this->id = id;
-}
-
-size_t Tree::Function::ID() const
-{
-    return id;
+    return args;
 }
 
 std::string Tree::Function::Name() const

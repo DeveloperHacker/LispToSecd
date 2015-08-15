@@ -37,31 +37,34 @@ struct Leaf
 
     Leaf &operator = (const Leaf &);
 };
-typedef Leaf Root;
+struct Root
+{
+    Leaf leaf;
+    std::list<Function*> BuildInfunctions;
+};
 
-enum class Status {let, letrec};
+enum class Status {let, letrec, argument};
 class Function
 {
 private:
-    long long int id;
     std::string name;
     size_t args;
-    Root body;
+    Leaf body;
     Status status;
 public:
     Function() = default;
     Function(const Function &);
-    Function(long long int id, std::string name, size_t args, Root body, Status status) : id(id), name(name), args(args), body(body), status(status) {}
+    Function(std::string name, size_t args, Leaf body, Status status) :name(name), args(args), body(body), status(status) {}
     ~Function() = default;
 public:
     Function &operator = (const Function &);
     bool operator == (const Function &) const;
     bool operator != (const Function &) const;
-    Root* BodyPtr();
-    size_t ID() const;
-    void SetID(size_t);
+    Leaf *BodyPtr();
+    size_t Args() const;
     std::string Name() const;
     Status GetStatus() const;
+
 };
 
 struct Segment

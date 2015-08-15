@@ -1,331 +1,145 @@
-( letrec Fib ( int ) 
-  ( letrec ABC ( ) 
-    ( + 1 2 ) 
-    if 
-    ( | 
-      ( = int 1 ) 
-      ( = int 2 ) ) 
-    1 
-    ( + 
-      ( Fib 
-        ( - int 1 ) ) 
-      ( Fib 
-        ( - int 2 ) ) ) ) 
-  Fib 
-  ( Fib 5 ) ) 
+( 
+  letrec sqr ( int ) 
+  ( * int int ) 
+  sqr 5 ) 
 
 --------||--------||--------||--------
-Leaf: 0x28fe00 ;
+Leaf: 0x28fdf8 ;
 Declared functions: <18>;
 SExpression: 
   Head: 
-    Ptr: 0x8c5c48;
-    Name: Fib;
+    Ptr: 0x6c6f58;
+    Name: sqr;
   Tail: 
-    Leaf: 0x8c8370;
+    Leaf: 0x6c8050;
 --------||--------||--------||--------
-Leaf: 0x8c5c58 ;
-Declared functions: <20>;
+Leaf: 0x6c6f60 ;
+Declared functions: <19>;
 SExpression: 
   Head: 
-    Ptr: 0x8c87d0;
-    Name: if;
+    Ptr: 0x6c6e68;
+    Name: *;
   Tail: 
-    Leaf: 0x8c8640;
-    Leaf: 0x8c8528;
-    Leaf: 0x8c8550;
+    Leaf: 0x6c7028;
+    Leaf: 0x6c7050;
 --------||--------||--------||--------
-Leaf: 0x8c8370 ;
+Leaf: 0x6c8050 ;
 Declared functions: <18>;
 SExpression: 
   Head: 
-    Ptr: 0x8c5c48;
-    Name: Fib;
-  Tail: 
-    Leaf: 0x8c8438;
---------||--------||--------||--------
-Leaf: 0x8c5c28 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c1230;
-    Name: +;
-  Tail: 
-    Leaf: 0x8c8708;
-    Leaf: 0x8c86b8;
---------||--------||--------||--------
-Leaf: 0x8c8640 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8cb0b8;
-    Name: |;
-  Tail: 
-    Leaf: 0x8c8730;
-    Leaf: 0x8c8578;
---------||--------||--------||--------
-Leaf: 0x8c8528 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5ca8;
-    Name: 1;
-  Tail: Nil;
---------||--------||--------||--------
-Leaf: 0x8c8550 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c1230;
-    Name: +;
-  Tail: 
-    Leaf: 0x8c85a0;
-    Leaf: 0x8c8668;
---------||--------||--------||--------
-Leaf: 0x8c8438 ;
-Declared functions: <18>;
-SExpression: 
-  Head: 
-    Ptr: 0x8cdf50;
+    Ptr: 0x6c7070;
     Name: 5;
   Tail: Nil;
 --------||--------||--------||--------
-Leaf: 0x8c8708 ;
-Declared functions: <20>;
+Leaf: 0x6c7028 ;
+Declared functions: <19>;
 SExpression: 
   Head: 
-    Ptr: 0x8c5d08;
-    Name: 1;
-  Tail: Nil;
---------||--------||--------||--------
-Leaf: 0x8c86b8 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5be8;
-    Name: 2;
-  Tail: Nil;
---------||--------||--------||--------
-Leaf: 0x8c8730 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c04d0;
-    Name: =;
-  Tail: 
-    Leaf: 0x8c86e0;
-    Leaf: 0x8c8500;
---------||--------||--------||--------
-Leaf: 0x8c8578 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c04d0;
-    Name: =;
-  Tail: 
-    Leaf: 0x8c8758;
-    Leaf: 0x8c87a8;
---------||--------||--------||--------
-Leaf: 0x8c85a0 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5c48;
-    Name: Fib;
-  Tail: 
-    Leaf: 0x8c8618;
---------||--------||--------||--------
-Leaf: 0x8c8668 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5c48;
-    Name: Fib;
-  Tail: 
-    Leaf: 0x8c8780;
---------||--------||--------||--------
-Leaf: 0x8c86e0 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5b88;
+    Ptr: 0x6c6fd0;
     Name: int;
   Tail: Nil;
 --------||--------||--------||--------
-Leaf: 0x8c8500 ;
-Declared functions: <20>;
+Leaf: 0x6c7050 ;
+Declared functions: <19>;
 SExpression: 
   Head: 
-    Ptr: 0x8c5c78;
-    Name: 1;
-  Tail: Nil;
---------||--------||--------||--------
-Leaf: 0x8c8758 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5b88;
+    Ptr: 0x6c6fd0;
     Name: int;
   Tail: Nil;
 --------||--------||--------||--------
-Leaf: 0x8c87a8 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5b58;
-    Name: 2;
-  Tail: Nil;
---------||--------||--------||--------
-Leaf: 0x8c8618 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c1260;
-    Name: -;
-  Tail: 
-    Leaf: 0x8c85f0;
-    Leaf: 0x8c85c8;
---------||--------||--------||--------
-Leaf: 0x8c8780 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c1260;
-    Name: -;
-  Tail: 
-    Leaf: 0x8c8028;
-    Leaf: 0x8c8348;
---------||--------||--------||--------
-Leaf: 0x8c85f0 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5b88;
-    Name: int;
-  Tail: Nil;
---------||--------||--------||--------
-Leaf: 0x8c85c8 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5cd8;
-    Name: 1;
-  Tail: Nil;
---------||--------||--------||--------
-Leaf: 0x8c8028 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5b88;
-    Name: int;
-  Tail: Nil;
---------||--------||--------||--------
-Leaf: 0x8c8348 ;
-Declared functions: <20>;
-SExpression: 
-  Head: 
-    Ptr: 0x8c5bb8;
-    Name: 2;
-  Tail: Nil;
---------||--------||--------||--------
-Funcions: <20>;
+Funcions: <19>;
 Function:
-  Ptr: 0x8c04a0;
-  Name: <;
-  Body: 0x8c04b0;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c04d0;
-  Name: =;
-  Body: 0x8c04e0;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c0500;
-  Name: !=;
-  Body: 0x8c0510;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c0530;
-  Name: >=;
-  Body: 0x8c0540;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c0560;
-  Name: <=;
-  Body: 0x8c0570;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c1200;
-  Name: !;
-  Body: 0x8c1210;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c1230;
-  Name: +;
-  Body: 0x8c1240;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c1260;
-  Name: -;
-  Body: 0x8c1270;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c12c8;
+  Ptr: 0x6c6dc8;
   Name: car;
-  Body: 0x8c12d8;
+  Body: 0x6c6dd0;
 --------||--------||--------||--------
 Function:
-  Ptr: 0x8c12f8;
-  Name: cdr;
-  Body: 0x8c1308;
+  Ptr: 0x6c6df0;
+  Name: !;
+  Body: 0x6c6df8;
 --------||--------||--------||--------
 Function:
-  Ptr: 0x8c1328;
+  Ptr: 0x6c6e18;
+  Name: +;
+  Body: 0x6c6e20;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c6e40;
   Name: q;
-  Body: 0x8c1338;
+  Body: 0x6c6e48;
 --------||--------||--------||--------
 Function:
-  Ptr: 0x8c5b88;
-  Name: int;
-  Body: 0x8c5b98;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c5c18;
-  Name: ABC;
-  Body: 0x8c5c28;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c5c48;
-  Name: Fib;
-  Body: 0x8c5c58;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8c87d0;
-  Name: if;
-  Body: 0x8c87e0;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8cb028;
+  Ptr: 0x6c6e68;
   Name: *;
-  Body: 0x8cb038;
+  Body: 0x6c6e70;
 --------||--------||--------||--------
 Function:
-  Ptr: 0x8cb058;
-  Name: /;
-  Body: 0x8cb068;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8cb088;
+  Ptr: 0x6c6e90;
   Name: &;
-  Body: 0x8cb098;
+  Body: 0x6c6e98;
 --------||--------||--------||--------
 Function:
-  Ptr: 0x8cb0b8;
-  Name: |;
-  Body: 0x8cb0c8;
---------||--------||--------||--------
-Function:
-  Ptr: 0x8cb0e8;
+  Ptr: 0x6c6eb8;
   Name: >;
-  Body: 0x8cb0f8;
+  Body: 0x6c6ec0;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c6ee0;
+  Name: <=;
+  Body: 0x6c6ee8;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c6f08;
+  Name: if;
+  Body: 0x6c6f10;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c6f58;
+  Name: sqr;
+  Body: 0x6c6f60;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c6fa8;
+  Name: /;
+  Body: 0x6c6fb0;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c6fd0;
+  Name: int;
+  Body: 0x6c6fd8;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c6ff8;
+  Name: >=;
+  Body: 0x6c7000;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c7098;
+  Name: =;
+  Body: 0x6c70a0;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c70c0;
+  Name: -;
+  Body: 0x6c70c8;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c70e8;
+  Name: |;
+  Body: 0x6c70f0;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c7110;
+  Name: !=;
+  Body: 0x6c7118;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c7138;
+  Name: <;
+  Body: 0x6c7140;
+--------||--------||--------||--------
+Function:
+  Ptr: 0x6c7160;
+  Name: cdr;
+  Body: 0x6c7168;
 --------||--------||--------||--------
