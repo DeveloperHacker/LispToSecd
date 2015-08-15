@@ -1,1 +1,1 @@
-( letrec sqr ( int ) ( * int int ) sqr 5 )
+( letrec mul ( a b c ) ( * a ( * b c ) ) mul 5 6 7 )
