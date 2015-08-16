@@ -477,7 +477,7 @@ void Parser::PrintSecdCode(std::ofstream &out, Tree::Root &tree) const
     functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP CONS LDF [ LD [ 1 2 ] LD [ 1 1 ] EQ LDC F EQ SEL [ LD [ 1 2 ] LD [ 1 1 ] LEQ SEL [ LDC T ] [ LDC F ] ] [ LDC F ] RTN ] RAP RTN")); // <
     functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP EQ RTN")); // ==
     functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP EQ LDC F EQ RTN")); // !=
-    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP CONS LDF [ LD [ 1 2 ] LD [ 1 1 ] EQ SEL [ LD [ 1 2 ] LD [ 1 1 ] LEQ LDC F EQ SEL [ LDC T ] [ LDC F ] ] [ LDC F ] RTN ] RAP RTN")); // >=
+    functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP CONS LDF [ LD [ 1 2 ] LD [ 1 1 ] EQ SEL [ LDC T ] [ LD [ 1 2 ] LD [ 1 1 ] LEQ SEL [ LDC F ] [ LDC T ] ] RTN ] RAP RTN")); // >=
     functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 2 ] RAP LD 1 LD [ 1 1 ] RAP LEQ RTN")); // <=
     functions.push_front(std::pair<Tree::Function*, std::string>(*(it++), "LD 1 LD [ 1 1 ] RAP SEL [ LD 1 LD [ 1 2 ] RAP ] [ LD 1 LD [ 1 3 ] RAP ] RTN")); // if
 
